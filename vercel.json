@@ -1,0 +1,10 @@
+{
+  "rewrites": [
+    { "source": "/", "destination": "/atelier-construction.html" },
+    { "source": "/template-1", "destination": "/atelier-construction.html" },
+    { "source": "/template-2", "destination": "/construction-website.html" },
+    { "source": "/template-3", "destination": "/halden-construction.html" },
+    { "source": "/template-4", "destination": "/kessler-construction.html" },
+    { "source": "/template-5", "destination": "/marlow-construction.html" }
+  ]
+}
