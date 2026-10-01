@@ -43,7 +43,7 @@ main{margin-left:88px}
 .acts{display:flex;gap:12px;flex-wrap:wrap}
 .spec{border:1px solid var(--line);border-radius:14px;overflow:hidden}
 .spec div{display:flex;justify-content:space-between;gap:16px;padding:20px 24px;border-bottom:1px solid var(--line);transition:background .3s}
-.spec div:last-child{border:0}.spec div:hover{background:var(--c)}
+.spec div:last-child{border:0}.spec div:is(:hover,.act){background:var(--c)}
 .spec span{color:var(--mute)}.spec b{font-weight:600;text-align:right}
 
 section{padding:110px 0 0}
@@ -109,7 +109,11 @@ input:focus,select:focus,textarea:focus{outline:0;border-color:var(--a);box-shad
 .ft{grid-column:1/-1;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-top:60px;padding-top:20px;border-top:1px solid var(--line);color:var(--mute);font-size:.9rem}
 
 @media(max-width:900px){
-  main{margin-left:0}.rail{display:none}.nl{display:none}
+  main{margin-left:0;padding-bottom:64px}.nl{display:none}
+  .rail{top:auto;left:0;right:0;bottom:0;width:auto;height:60px;flex-direction:row;border-right:0;border-top:1px solid var(--line);padding:0 18px}
+  .tw{flex-direction:row;gap:6px}.tw a{width:30px;height:30px}.tw a::after{inset:7px 5px}.tw a.cur{transform:translateY(-6px)}
+  .lv{writing-mode:horizontal-tb;transform:none}
+  .hero h1{font-size:2.9rem}
   .hero,.sv,.ct{grid-template-columns:1fr}.hero{min-height:auto}
   .pc{grid-template-columns:1fr;top:calc(10px + var(--i) * 16px)}.pc svg{max-height:200px}
   .rg{grid-template-columns:1fr}
@@ -232,6 +236,18 @@ function tw(){let c=0;secs.forEach((s,i)=>{if(s.getBoundingClientRect().top<inne
 addEventListener('scroll',tw,{passive:true});tw();
 
 document.getElementById('f').addEventListener('submit',e=>{e.preventDefault();document.getElementById('ok').style.display='block';e.target.reset()});
+
+// touch and tablet: play hover-style effects when an element reaches the middle of the screen
+if(matchMedia('(hover:none)').matches){
+  const ao=new IntersectionObserver(es=>es.forEach(e=>e.target.classList.toggle('act',e.isIntersecting)),{rootMargin:'-42% 0px -42% 0px'});
+  document.querySelectorAll('.spec div').forEach(el=>ao.observe(el));
+}
+
+if(matchMedia('(hover:none)').matches){
+  // services cycle until the visitor taps one
+  let ti=0,stopT=false;tb.addEventListener('pointerdown',()=>stopT=true);
+  setInterval(()=>{if(!stopT){ti=(ti+1)%S.length;show(ti)}},4000);
+}
 </script>
 </body>
 </html>

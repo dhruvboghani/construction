@@ -26,7 +26,7 @@ nav a.go{background:var(--ink);color:var(--lime);padding:10px 20px;border-radius
 
 /* hero */
 .hero{min-height:100svh;padding-top:120px;display:flex;flex-direction:column;justify-content:space-between;position:relative}
-.hero h1{font-size:clamp(4.6rem,15.5vw,14.5rem)}
+.hero h1{font-size:clamp(3.6rem,15.5vw,14.5rem)}
 .hero h1 span{display:block;overflow:hidden;padding-bottom:.04em}
 .hero h1 span i{display:block;font-style:normal;transform:translateY(105%);animation:up 1s cubic-bezier(.2,.9,.2,1) forwards}
 .hero h1 span:nth-child(2) i{animation-delay:.12s;margin-left:clamp(0px,9vw,150px)}
@@ -50,8 +50,8 @@ nav a.go{background:var(--ink);color:var(--lime);padding:10px 20px;border-radius
 .row:last-child{border-bottom:1.5px solid var(--ink)}
 .row h3{font-size:clamp(2rem,4.6vw,4.2rem);transition:transform .4s}
 .row span{color:var(--mute);font-size:.98rem}
-.row:hover{background:var(--lime);padding-left:30px}
-.row:hover span{color:var(--ink)}
+.row:is(:hover,.act){background:var(--lime);padding-left:30px}
+.row:is(:hover,.act) span{color:var(--ink)}
 #pv{position:fixed;left:0;top:0;width:300px;height:210px;border-radius:16px;pointer-events:none;z-index:25;opacity:0;scale:.7;transition:opacity .25s,scale .35s;background:var(--g);overflow:hidden;box-shadow:0 30px 60px -24px rgba(16,19,17,.5)}
 #pv.on{opacity:1;scale:1}
 #pv svg{position:absolute;inset:0;width:100%;height:100%;stroke:rgba(255,255,255,.55);fill:none;stroke-width:1.4}
@@ -60,7 +60,7 @@ nav a.go{background:var(--ink);color:var(--lime);padding:10px 20px;border-radius
 .bento{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
 .t{border-radius:26px;padding:32px;position:relative;overflow:hidden;min-height:250px;display:flex;flex-direction:column;justify-content:space-between;background:var(--stone);clip-path:inset(0 100% 0 0 round 26px);transition:clip-path 1s cubic-bezier(.2,.9,.2,1),transform .4s}
 .t.in{clip-path:inset(0 0 0 0 round 26px)}
-.t:hover{transform:translateY(-6px)}
+.t:is(:hover,.act){transform:translateY(-6px)}
 .t h3{font-size:clamp(2.2rem,4vw,3.6rem)}
 .t p{max-width:34ch;color:var(--mute)}
 .t.a{grid-column:1/4;grid-row:1/3;background:var(--lime);min-height:520px}
@@ -97,7 +97,7 @@ nav a.go{background:var(--ink);color:var(--lime);padding:10px 20px;border-radius
 .cta a.big{display:flex;justify-content:space-between;align-items:center;font-family:var(--h);font-weight:900;text-transform:uppercase;font-size:clamp(4.2rem,15vw,13rem);line-height:.85;gap:20px}
 .cta a.big u{flex:none;width:.5em;height:.5em;border-radius:50%;background:var(--ink);color:var(--lime);display:grid;place-items:center;text-decoration:none;font-size:inherit;transition:transform .5s}
 .cta a.big u::before{content:"\2197";font-family:var(--b);font-weight:500;font-size:.28em}
-.cta a.big:hover u{transform:rotate(45deg) scale(1.08)}
+.cta a.big:is(:hover,.act) u{transform:rotate(45deg) scale(1.08)}
 .foot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-top:80px;padding-top:22px;border-top:1.5px solid var(--ink);font-weight:500}
 
 @media(max-width:860px){
@@ -106,7 +106,8 @@ nav a.go{background:var(--ink);color:var(--lime);padding:10px 20px;border-radius
   .bento{grid-template-columns:1fr}.t.a,.t.b,.t.c,.t.d,.t.e{grid-column:auto;grid-row:auto;min-height:230px}.t.a{min-height:380px}
   .nums{grid-template-columns:1fr 1fr}
   .proc{grid-template-columns:1fr;gap:30px}.proc .stick{position:static}
-  #pv{display:none}
+  #pv{left:auto;top:auto;right:14px;bottom:14px;width:200px;height:140px;transform:none!important}
+  .hero h1 span:nth-child(2) i{margin-left:0}
 }
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition-duration:.01ms!important}
@@ -213,6 +214,25 @@ document.querySelectorAll('[data-n]').forEach(el=>co.observe(el));
 // process steps light up while scrolling
 const so=new IntersectionObserver(es=>es.forEach(e=>e.target.classList.toggle('on',e.isIntersecting)),{rootMargin:'-35% 0px -35% 0px'});
 document.querySelectorAll('.st').forEach(s=>so.observe(s));
+
+// touch and tablet: play hover-style effects when an element reaches the middle of the screen
+if(matchMedia('(hover:none)').matches){
+  const ao=new IntersectionObserver(es=>es.forEach(e=>e.target.classList.toggle('act',e.isIntersecting)),{rootMargin:'-42% 0px -42% 0px'});
+  document.querySelectorAll('.row,.t,.cta a.big').forEach(el=>ao.observe(el));
+}
+
+if(matchMedia('(hover:none)').matches){
+  // skyline waves by itself on touch screens
+  let t=0;(function w(){t+=.02;let best=0,bv=-1;
+    bars.forEach((b,i)=>{const v=Math.max(0,Math.sin(i*.35-t*3));b.style.setProperty('--h',Math.min(100,base[i]+v*38));if(v>bv){bv=v;best=i}b.classList.remove('hot')});
+    bars[best].classList.add('hot');requestAnimationFrame(w)})();
+  // project preview shows for the row in the middle of the screen
+  const live=new Set();
+  const po=new IntersectionObserver(es=>es.forEach(e=>{
+    if(e.isIntersecting){live.add(e.target);pv.style.setProperty('--g',e.target.dataset.g);pp.setAttribute('d',e.target.dataset.d)}else live.delete(e.target);
+    pv.classList.toggle('on',live.size>0)}),{rootMargin:'-42% 0px -42% 0px'});
+  document.querySelectorAll('.row').forEach(r=>po.observe(r));
+}
 </script>
 </body>
 </html>

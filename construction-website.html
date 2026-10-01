@@ -78,10 +78,10 @@ section{padding:96px 0}
 .svc{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
 .card{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:30px;transition:transform .35s,border-color .35s,box-shadow .35s;position:relative;overflow:hidden}
 .card::before{content:"";position:absolute;left:0;top:0;height:4px;width:100%;background:var(--orange);transform:scaleX(0);transform-origin:left;transition:transform .45s}
-.card:hover{transform:translateY(-8px);border-color:var(--blue);box-shadow:0 24px 40px -24px rgba(31,78,121,.4)}
-.card:hover::before{transform:scaleX(1)}
+.card:is(:hover,.act){transform:translateY(-8px);border-color:var(--blue);box-shadow:0 24px 40px -24px rgba(31,78,121,.4)}
+.card:is(:hover,.act)::before{transform:scaleX(1)}
 .card svg{width:44px;height:44px;stroke:var(--blue);fill:none;stroke-width:1.8;margin-bottom:22px;transition:transform .5s}
-.card:hover svg{transform:rotate(-8deg) scale(1.12)}
+.card:is(:hover,.act) svg{transform:rotate(-8deg) scale(1.12)}
 .card h3{font-size:1.4rem;margin-bottom:10px}
 .card p{color:var(--muted)}
 
@@ -91,9 +91,9 @@ section{padding:96px 0}
 .proj{border-radius:22px;overflow:hidden;position:relative;min-height:340px;display:flex;align-items:flex-end;padding:26px;color:#fff;isolation:isolate}
 .proj::before{content:"";position:absolute;inset:0;z-index:-2;background:var(--bgc);transition:transform .8s cubic-bezier(.2,.8,.2,1)}
 .proj::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(transparent 35%,rgba(10,20,30,.8))}
-.proj:hover::before{transform:scale(1.1)}
+.proj:is(:hover,.act)::before{transform:scale(1.1)}
 .proj svg{position:absolute;right:-10px;top:-10px;width:70%;z-index:-1;opacity:.28;stroke:#fff;fill:none;stroke-width:1.5;transition:transform .8s}
-.proj:hover svg{transform:translate(-14px,10px)}
+.proj:is(:hover,.act) svg{transform:translate(-14px,10px)}
 .proj h3{font-size:1.5rem}
 .proj small{display:block;opacity:.85;margin-top:4px}
 .p1{--bgc:linear-gradient(135deg,#1F4E79,#3E7CB1)}
@@ -134,6 +134,37 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
   .steps{grid-template-columns:1fr 1fr;row-gap:36px}.steps::before,.steps::after{display:none}
   .quote{padding:34px}
 }
+/* upgrades */
+#pb{position:fixed;top:0;left:0;height:3px;width:100%;background:var(--orange);transform:scaleX(0);transform-origin:left;z-index:50}
+nav{transition:box-shadow .3s}nav.sc{box-shadow:0 10px 30px -18px rgba(20,32,43,.35)}
+.burger{display:none;background:none;border:1.5px solid var(--line);border-radius:999px;padding:8px 16px;font:inherit;font-weight:600;cursor:pointer;color:var(--ink)}
+.mq{overflow:hidden;border-block:1px solid var(--line);background:var(--paper);padding:18px 0;margin-top:56px}
+.mq-t{display:flex;width:max-content;gap:56px;animation:mq 32s linear infinite;font-family:var(--head);font-weight:700;font-size:1.1rem;color:var(--muted)}
+.mq-t span{display:flex;align-items:center;gap:56px;white-space:nowrap}
+.mq-t span::after{content:"";width:8px;height:8px;background:var(--orange);transform:rotate(45deg)}
+.mq:hover .mq-t{animation-play-state:paused}
+@keyframes mq{to{transform:translateX(-50%)}}
+.card::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .3s;background:radial-gradient(260px circle at var(--mx,50%) var(--my,50%),rgba(242,106,27,.12),transparent 70%)}
+.card:is(:hover,.act)::after{opacity:1}
+.est{background:var(--paper);border:1px solid var(--line);border-radius:28px;padding:48px;display:grid;grid-template-columns:1.2fr 1fr;gap:48px;align-items:center;box-shadow:0 30px 60px -40px rgba(31,78,121,.35)}
+.est h2{font-size:clamp(1.8rem,3.4vw,2.6rem);font-weight:800;margin-bottom:10px}
+.est p{color:var(--muted);margin-bottom:26px}
+.seg{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.seg button{font:inherit;font-weight:600;padding:10px 18px;border-radius:999px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer;transition:.25s}
+.seg button:hover{border-color:var(--blue)}
+.seg button.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.est label{display:block;font-weight:600;margin-bottom:22px}
+.est input[type=range]{padding:0;margin-top:12px;accent-color:var(--orange);height:6px;border:0;background:transparent;box-shadow:none}
+.out{background:var(--blue-soft);border-radius:22px;padding:36px;text-align:center}
+.out small{color:var(--muted);font-weight:500}
+.out strong{display:block;font-family:var(--head);font-size:clamp(1.9rem,3.6vw,2.8rem);font-weight:800;color:var(--blue);margin:8px 0 22px;font-variant-numeric:tabular-nums}
+@media(max-width:900px){
+  .burger{display:block}
+  .links.open{display:flex;position:absolute;top:68px;left:0;right:0;flex-direction:column;gap:18px;background:var(--paper);padding:22px 24px;border-bottom:1px solid var(--line)}
+  .est{grid-template-columns:1fr;padding:28px;gap:28px}
+}
+@media(max-width:560px){nav .btn{display:none}}
+@media(prefers-reduced-motion:reduce){.mq-t,.hook,.lift{animation:none!important}}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important}
   .d{stroke-dashoffset:0}.rv,.hero h1 span b,.hero p.lead,.cta,.win{opacity:1;transform:none}
@@ -141,11 +172,13 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
 </style>
 </head>
 <body>
+<div id="pb"></div>
 
 <nav>
   <div class="wrap">
     <a href="#" class="logo"><i></i>Northbeam</a>
     <div class="links"><a href="#services">Services</a><a href="#projects">Projects</a><a href="#process">How we work</a><a href="#contact">Contact</a></div>
+    <button class="burger" id="bg" aria-expanded="false">Menu</button>
     <a href="#contact" class="btn">Get a quote</a>
   </div>
 </nav>
@@ -183,6 +216,11 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
   </div>
 </header>
 
+<div class="mq" aria-label="Certifications and guarantees"><div class="mq-t">
+<span>Licensed and bonded</span><span>OSHA 30 certified</span><span>ISO 9001 quality</span><span>LEED accredited</span><span>10-year warranty</span><span>Fixed-price contracts</span>
+<span>Licensed and bonded</span><span>OSHA 30 certified</span><span>ISO 9001 quality</span><span>LEED accredited</span><span>10-year warranty</span><span>Fixed-price contracts</span>
+</div></div>
+
 <section id="services">
   <div class="wrap">
     <div class="sec-head rv"><h2>What we build</h2><p>One team from the first sketch to the final inspection, so nothing gets lost between trades.</p></div>
@@ -215,6 +253,19 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
       <div class="step"><em>4</em><h3>Handover</h3><p>Final walkthrough, snag fixes and a 10-year structural warranty.</p></div>
     </div>
   </div>
+</section>
+
+<section id="estimate" style="padding-top:0">
+  <div class="wrap"><div class="est rv">
+    <div>
+      <h2>Estimate your budget</h2>
+      <p>Choose a project type and size for a ballpark range. A fixed-price quote follows after a site visit.</p>
+      <div class="seg" id="seg"><button class="on" data-r="180,260">Commercial</button><button data-r="150,230">Residential</button><button data-r="90,160">Renovation</button></div>
+      <label>Size: <span id="szv">5,000</span> sq ft<input type="range" id="sz" min="500" max="50000" step="500" value="5000"></label>
+      <div class="seg" id="tier"><button class="on" data-m="1">Standard finish</button><button data-m="1.3">Premium finish</button></div>
+    </div>
+    <div class="out"><small>Indicative range</small><strong id="rng">$0</strong><a href="#contact" class="btn orange">Get a fixed quote</a></div>
+  </div></div>
 </section>
 
 <section id="contact" style="padding-top:0">
@@ -259,8 +310,43 @@ new IntersectionObserver((es,o)=>{if(es[0].isIntersecting){
   o.disconnect();
 }},{threshold:.5}).observe(st);
 
+// progress bar + nav shadow
+const pb=document.getElementById('pb'),nv=document.querySelector('nav');
+addEventListener('scroll',()=>{const h=document.documentElement;pb.style.transform='scaleX('+(h.scrollTop/(h.scrollHeight-h.clientHeight||1))+')';nv.classList.toggle('sc',h.scrollTop>10)},{passive:true});
+
+// mobile menu
+const bg=document.getElementById('bg'),lk=document.querySelector('.links');
+bg.onclick=()=>bg.setAttribute('aria-expanded',lk.classList.toggle('open'));
+lk.onclick=()=>{lk.classList.remove('open');bg.setAttribute('aria-expanded','false')};
+
+// card spotlight
+document.querySelectorAll('.card').forEach(c=>c.addEventListener('pointermove',e=>{const r=c.getBoundingClientRect();c.style.setProperty('--mx',e.clientX-r.left+'px');c.style.setProperty('--my',e.clientY-r.top+'px')}));
+
+// estimator
+let rate=[180,260],mult=1,cur=[0,0];
+const fmt=n=>n>=1e6?'$'+(n/1e6).toFixed(2)+'M':'$'+Math.round(n/1e3)+'K';
+function est(){
+  const sz=+document.getElementById('sz').value;
+  document.getElementById('szv').textContent=sz.toLocaleString();
+  const to=[rate[0]*sz*mult,rate[1]*sz*mult],from=cur.slice(),t0=performance.now();
+  (function f(t){const p=Math.min((t-t0)/500,1),e=1-Math.pow(1-p,3);
+    cur=[from[0]+(to[0]-from[0])*e,from[1]+(to[1]-from[1])*e];
+    document.getElementById('rng').textContent=fmt(cur[0])+' – '+fmt(cur[1]);
+    if(p<1)requestAnimationFrame(f)})(t0);
+}
+function seg(id,fn){const g=document.getElementById(id);g.onclick=e=>{const b=e.target.closest('button');if(!b)return;g.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');fn(b);est()}}
+seg('seg',b=>rate=b.dataset.r.split(',').map(Number));
+seg('tier',b=>mult=+b.dataset.m);
+document.getElementById('sz').oninput=est;est();
+
 // form
 document.getElementById('f').addEventListener('submit',e=>{e.preventDefault();document.getElementById('ok').style.display='block';e.target.reset()});
+
+// touch and tablet: play hover-style effects when an element reaches the middle of the screen
+if(matchMedia('(hover:none)').matches){
+  const ao=new IntersectionObserver(es=>es.forEach(e=>e.target.classList.toggle('act',e.isIntersecting)),{rootMargin:'-42% 0px -42% 0px'});
+  document.querySelectorAll('.card,.proj').forEach(el=>ao.observe(el));
+}
 </script>
 </body>
 </html>
