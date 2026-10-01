@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orlo Construction</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FFFFFF;--ink:#0A0A0A;--grey:#6F6F6F;--line:#E3E3E3;--f:'Schibsted Grotesk','Helvetica Neue',Arial,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--f);line-height:1.55;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--ink);color:var(--bg)}
+:focus-visible{outline:2px solid var(--ink);outline-offset:4px}
+.w{max-width:1360px;margin:0 auto;padding:0 40px}
+h1,h2,h3{font-weight:500;letter-spacing:-.035em;line-height:1}
+
+/* column guides */
+.guides{position:fixed;inset:0;pointer-events:none;z-index:0}
+.guides div{max-width:1360px;margin:0 auto;height:100%;padding:0 40px;display:grid;grid-template-columns:repeat(4,1fr)}
+.guides span{border-left:1px solid var(--line)}
+.guides span:last-child{border-right:1px solid var(--line)}
+main,header,footer{position:relative;z-index:1}
+
+header.bar{display:flex;justify-content:space-between;align-items:center;padding:26px 0}
+.logo{font-weight:800;font-size:1.3rem;letter-spacing:-.04em}
+.nl{display:flex;gap:36px;font-size:.95rem}
+.nl a,.ul{background:linear-gradient(var(--ink),var(--ink)) 0 100%/0 1px no-repeat;transition:background-size .35s;padding-bottom:2px}
+.nl a:hover,.ul:hover{background-size:100% 1px}
+.pill{border:1px solid var(--ink);border-radius:99px;padding:9px 20px;font-size:.92rem;transition:background .25s,color .25s}
+.pill:hover{background:var(--ink);color:var(--bg)}
+
+/* hero with CAD crosshair */
+.hero{position:relative;min-height:calc(100svh - 80px);display:flex;flex-direction:column;justify-content:space-between;padding:60px 0 40px;cursor:crosshair;overflow:hidden}
+.hero h1{font-size:clamp(3.4rem,9.4vw,9.6rem);max-width:11ch}
+.hero h1 span{display:block;overflow:hidden}
+.hero h1 i{display:block;font-style:normal;transform:translateY(105%);animation:up 1s cubic-bezier(.2,.9,.2,1) forwards}
+.hero h1 span:nth-child(2) i{animation-delay:.1s}.hero h1 span:nth-child(3) i{animation-delay:.2s}
+@keyframes up{to{transform:none}}
+.hf{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;flex-wrap:wrap;opacity:0;animation:fd .8s .7s forwards}
+@keyframes fd{to{opacity:1}}
+.hf p{max-width:36ch;color:var(--grey);font-size:1.1rem}
+.fac{position:absolute;right:40px;bottom:0;width:min(46vw,560px);pointer-events:none}
+.fac path{fill:none;stroke:var(--ink);stroke-width:1.4;stroke-dasharray:1;stroke-dashoffset:1;animation:dr 2.6s .4s cubic-bezier(.4,.1,.2,1) forwards}
+.fac path:nth-child(2){animation-delay:.9s}.fac path:nth-child(3){animation-delay:1.4s}
+@keyframes dr{to{stroke-dashoffset:0}}
+.ch,.cv{position:absolute;background:var(--ink);opacity:0;pointer-events:none;transition:opacity .3s}
+.ch{left:0;right:0;height:1px;top:var(--y,0)}.cv{top:0;bottom:0;width:1px;left:var(--x,0)}
+.ro{position:absolute;left:var(--x,0);top:var(--y,0);transform:translate(12px,12px);background:var(--ink);color:var(--bg);font-size:.78rem;padding:3px 9px;border-radius:99px;font-variant-numeric:tabular-nums;opacity:0;pointer-events:none;transition:opacity .3s;white-space:nowrap}
+.hero.live .ch,.hero.live .cv{opacity:.22}.hero.live .ro{opacity:1}
+
+section{padding:130px 0 0}
+.hd{display:grid;grid-template-columns:1fr 3fr;gap:40px;margin-bottom:56px}
+.hd small{font-size:.95rem;color:var(--grey)}
+.hd h2{font-size:clamp(2.4rem,5.4vw,5rem)}
+
+/* projects viewer */
+.pj{display:grid;grid-template-columns:1fr 1.3fr;gap:60px;border-top:1px solid var(--ink)}
+.pl{padding:16px 0}
+.pl button{all:unset;box-sizing:border-box;display:flex;justify-content:space-between;align-items:baseline;width:100%;padding:22px 0;border-bottom:1px solid var(--line);cursor:pointer;font-size:clamp(1.6rem,3vw,2.5rem);letter-spacing:-.03em;color:#B9B9B9;transition:color .3s,padding .3s}
+.pl button span{font-size:.9rem;letter-spacing:0}
+.pl button:hover,.pl button.on{color:var(--ink)}
+.pl button.on{padding-left:18px;border-bottom-color:var(--ink)}
+.pl button:focus-visible{outline:2px solid var(--ink)}
+.pv{padding:30px 0;position:sticky;top:20px;align-self:start}
+.pv svg{width:100%;height:auto;aspect-ratio:1.3;display:block;border:1px solid var(--line)}
+.pv path{fill:none;stroke:var(--ink);stroke-width:1.3;stroke-dasharray:1;stroke-dashoffset:1;animation:dr 1.6s cubic-bezier(.4,.1,.2,1) forwards}
+.pm{display:flex;justify-content:space-between;margin-top:16px;font-size:.95rem;color:var(--grey)}
+.pm b{color:var(--ink);font-weight:500}
+
+/* services */
+.sv{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--ink)}
+.sv div{padding:34px 30px 50px 0;border-right:1px solid var(--line);transition:background .35s,color .35s,padding .35s}
+.sv div:not(:first-child){padding-left:30px}
+.sv div:last-child{border-right:0}
+.sv div:hover{background:var(--ink);color:var(--bg)}
+.sv div:hover p{color:#BDBDBD}
+.sv svg{width:46px;height:46px;stroke:currentColor;fill:none;stroke-width:1.4;margin-bottom:60px;display:block}
+.sv h3{font-size:2rem;margin-bottom:12px}
+.sv p{color:var(--grey);max-width:30ch;transition:color .35s}
+
+/* steps */
+.tl{display:grid;grid-template-columns:repeat(4,1fr);gap:30px;position:relative;padding-top:40px}
+.tl::before,.tl::after{content:"";position:absolute;top:0;left:0;height:2px}
+.tl::before{width:100%;background:var(--line)}
+.tl::after{width:var(--p,0%);background:var(--ink);transition:width 2s cubic-bezier(.3,.7,.2,1)}
+.tl em{font-style:normal;font-size:.95rem;color:var(--grey)}
+.tl h3{font-size:2.1rem;margin:36px 0 12px}
+.tl p{color:var(--grey);max-width:28ch}
+
+/* numbers */
+.nm{display:grid;grid-template-columns:repeat(4,1fr);gap:30px;border-top:1px solid var(--ink);padding-top:30px}
+.nm strong{font-size:clamp(3rem,7vw,6.4rem);font-weight:500;letter-spacing:-.05em;line-height:1;display:block}
+.nm span{color:var(--grey)}
+
+/* contact */
+.ct{background:var(--ink);color:var(--bg);margin-top:140px;padding:110px 0 36px;position:relative;z-index:1}
+.ct h2{font-size:clamp(3rem,8vw,8rem);max-width:12ch;margin-bottom:60px}
+.ct .g{display:grid;grid-template-columns:1fr 1fr;gap:60px}
+.ct form{display:grid;gap:22px}
+.ct input,.ct select,.ct textarea{width:100%;background:transparent;border:0;border-bottom:1px solid #4A4A4A;color:var(--bg);padding:12px 0;font:inherit;font-size:1.05rem;border-radius:0;transition:border-color .25s}
+.ct select option{color:#000}
+.ct input::placeholder,.ct textarea::placeholder{color:#8A8A8A}
+.ct input:focus,.ct select:focus,.ct textarea:focus{outline:0;border-bottom-color:var(--bg)}
+.ct button{justify-self:start;background:var(--bg);color:var(--ink);border:0;border-radius:99px;padding:15px 32px;font:inherit;font-weight:600;cursor:pointer;transition:transform .3s}
+.ct button:hover{transform:translateX(6px)}
+#ok{display:none}
+.ct .info{display:grid;gap:26px;align-content:start;font-size:1.15rem}
+.ct .info small{display:block;color:#8A8A8A;font-size:.9rem}
+.fo{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-top:90px;padding-top:22px;border-top:1px solid #333;color:#8A8A8A;font-size:.9rem}
+
+@media(max-width:860px){
+  .w{padding:0 22px}.nl{display:none}
+  .guides span:nth-child(n+3){display:none}.guides div{grid-template-columns:repeat(2,1fr);padding:0 22px}
+  .hd,.pj,.ct .g{grid-template-columns:1fr;gap:26px}
+  .pv{position:static}
+  .sv{grid-template-columns:1fr}.sv div,.sv div:not(:first-child){padding:30px 0;border-right:0;border-bottom:1px solid var(--line)}.sv svg{margin-bottom:30px}
+  .tl,.nm{grid-template-columns:1fr 1fr}
+  .fac{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition-duration:.01ms!important}
+  .hero h1 i{transform:none}.hf{opacity:1}.fac path,.pv path{stroke-dashoffset:0}
+}
+</style>
+</head>
+<body>
+<div class="guides" aria-hidden="true"><div><span></span><span></span><span></span><span></span></div></div>
+
+<div class="w">
+<header class="bar"><a class="logo" href="#">Orlo</a><nav class="nl"><a href="#work">Projects</a><a href="#services">Services</a><a href="#method">Method</a><a href="#contact">Contact</a></nav><a class="pill" href="#contact">Get a quote</a></header>
+
+<main>
+<div class="hero" id="hero">
+  <h1><span><i>Construction,</i></span><span><i>done</i></span><span><i>precisely.</i></span></h1>
+  <div class="hf"><p>Orlo builds commercial, residential and heritage projects to the drawing, to the budget and to the date.</p><a class="pill" href="#contact">Start a project</a></div>
+  <svg class="fac" viewBox="0 0 400 330" aria-hidden="true"><path pathLength="1" d="M0 328H400M60 328V90H220V328M220 328V170H340V328M60 130H220M60 170H220M60 210H220M60 250H220M60 290H220M100 90V328M140 90V328M180 90V328M240 170V328M280 170V328M320 170V328"/><path pathLength="1" d="M60 90L140 40L220 90M220 170L280 130L340 170"/><path pathLength="1" d="M60 70V20M60 20H20"/></svg>
+  <i class="ch"></i><i class="cv"></i><span class="ro" id="ro"></span>
+</div>
+
+<section id="work">
+  <div class="hd"><small>Projects</small><h2>Selected work, drawn and delivered.</h2></div>
+  <div class="pj">
+    <div class="pl" id="pl"></div>
+    <div class="pv"><svg viewBox="0 0 260 200" id="sv" role="img" aria-label="Line drawing of the selected project"><path pathLength="1" id="dp" d=""/></svg><div class="pm"><span id="pt"></span><b id="py"></b></div></div>
+  </div>
+</section>
+
+<section id="services">
+  <div class="hd"><small>Services</small><h2>One team from first sketch to final inspection.</h2></div>
+  <div class="sv">
+    <div><svg viewBox="0 0 48 48"><path d="M8 42V10h20v32M28 20h12v22M4 42h40M14 18h8M14 26h8M14 34h8"/></svg><h3>Commercial</h3><p>Offices, retail and warehouses built around how people move through them.</p></div>
+    <div><svg viewBox="0 0 48 48"><path d="M4 24L24 7l20 17M10 20v22h28V20M20 42V30h8v12"/></svg><h3>Residential</h3><p>Custom homes and multi-unit developments with itemised, fixed pricing.</p></div>
+    <div><svg viewBox="0 0 48 48"><path d="M6 42V18l18-10 18 10v24M6 42h36M16 42V28h16v14M24 8v8"/></svg><h3>Renovation</h3><p>Restorations that keep your building in use while the work goes on.</p></div>
+  </div>
+</section>
+
+<section id="method">
+  <div class="hd"><small>Method</small><h2>Four stages, each signed off by you.</h2></div>
+  <div class="tl" id="tl">
+    <div><em>Stage 1</em><h3>Consult</h3><p>Site visit, brief and a realistic budget range.</p></div>
+    <div><em>Stage 2</em><h3>Plan</h3><p>Drawings, permits and a fixed-price quote with dates.</p></div>
+    <div><em>Stage 3</em><h3>Build</h3><p>Weekly photo reports from a named site manager.</p></div>
+    <div><em>Stage 4</em><h3>Hand over</h3><p>Walkthrough, snag fixes and a ten-year warranty.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="nm">
+    <div><strong data-n="240">0</strong><span>Projects delivered</span></div>
+    <div><strong data-n="96" data-s="%">0</strong><span>Finished on schedule</span></div>
+    <div><strong data-n="18">0</strong><span>Years building</span></div>
+    <div><strong data-n="0">0</strong><span>Lost-time incidents this year</span></div>
+  </div>
+</section>
+</main>
+</div>
+
+<footer class="ct" id="contact"><div class="w">
+  <h2>Tell us what you want to build.</h2>
+  <div class="g">
+    <form id="f">
+      <input required placeholder="Your name" aria-label="Your name">
+      <input required type="email" placeholder="Email address" aria-label="Email address">
+      <select aria-label="Project type"><option>Commercial</option><option>Residential</option><option>Renovation</option></select>
+      <textarea rows="3" placeholder="Project details" aria-label="Project details"></textarea>
+      <button type="submit">Send request</button>
+      <div id="ok">Thanks. We will reply within one business day.</div>
+    </form>
+    <div class="info"><div><small>Email</small><a class="ul" href="mailto:hello@orlo.build">hello@orlo.build</a></div><div><small>Phone</small>+1 (555) 014 2290</div><div><small>Studio</small>240 Foundry Street, Suite 4</div></div>
+  </div>
+  <div class="fo"><span>&copy; 2026 Orlo Construction</span><span>Licensed, bonded and insured</span></div>
+</div></footer>
+
+<script>
+// CAD crosshair
+const hero=document.getElementById('hero'),ro=document.getElementById('ro');
+if(matchMedia('(pointer:fine)').matches&&!matchMedia('(prefers-reduced-motion:reduce)').matches){
+  hero.addEventListener('pointermove',e=>{const r=hero.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;
+    hero.style.setProperty('--x',x+'px');hero.style.setProperty('--y',y+'px');
+    ro.textContent='X '+Math.round(x*12.5)+'  Y '+Math.round(y*12.5)+' mm';hero.classList.add('live')});
+  hero.addEventListener('pointerleave',()=>hero.classList.remove('live'));
+}
+
+// projects viewer
+const P=[
+ {n:'Harbor Point Offices',t:'Commercial, 62,000 sq ft',y:'2025',d:'M10 190H250M40 190V50H120V190M120 190V90H200V190M40 90H120M40 130H120M40 160H120M70 50V190M150 90V190M180 90V190M40 50L80 25L120 50'},
+ {n:'Maple Court Homes',t:'Residential, 24 units',y:'2025',d:'M10 190H250M20 190V110L60 75L100 110V190M100 190V110L140 75L180 110V190M180 190V110L220 75L240 110V190M45 190V150H75V190M125 190V150H155V190'},
+ {n:'Foundry Lofts',t:'Heritage renovation',y:'2026',d:'M10 190H250M30 190V70L130 20L230 70V190M30 70H230M70 190V120H110V190M150 190V120H190V120V190M60 95H100M160 95H200M130 20V45'},
+ {n:'Eastgate Logistics Hub',t:'Warehouse, 210,000 sq ft',y:'2026',d:'M10 190H250M20 190V80H240V190M20 80L130 45L240 80M50 190V130H90V190M100 190V130H140V190M150 190V130H190V190M200 190V130H235V190'}];
+let dp=document.getElementById('dp');const pl=document.getElementById('pl'),pt=document.getElementById('pt'),py=document.getElementById('py');
+P.forEach((p,i)=>{const b=document.createElement('button');b.innerHTML=p.n+'<span>'+p.y+'</span>';
+  const sel=()=>{pl.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+    const n=dp.cloneNode();n.setAttribute('d',p.d);n.removeAttribute('style');dp.replaceWith(n);dp=n;
+    pt.textContent=p.t;py.textContent='Handed over '+p.y};
+  b.onmouseenter=sel;b.onfocus=sel;b.onclick=sel;pl.appendChild(b);if(!i)sel()});
+
+// steps line
+new IntersectionObserver((es,o)=>{if(es[0].isIntersecting){document.getElementById('tl').style.setProperty('--p','100%');o.disconnect()}},{threshold:.5}).observe(document.getElementById('tl'));
+
+// count up
+const co=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;co.unobserve(e.target);
+  const n=+e.target.dataset.n,s=e.target.dataset.s||'',t0=performance.now();
+  (function f(t){const p=Math.min((t-t0)/1500,1);e.target.textContent=Math.round(n*(1-Math.pow(1-p,4)))+s;if(p<1)requestAnimationFrame(f)})(t0)}),{threshold:.6});
+document.querySelectorAll('[data-n]').forEach(el=>co.observe(el));
+
+document.getElementById('f').addEventListener('submit',e=>{e.preventDefault();document.getElementById('ok').style.display='block';e.target.reset()});
+</script>
+</body>
+</html>

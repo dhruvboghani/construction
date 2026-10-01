@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Template Router</title>
+  <script>
+    (function () {
+      var routes = {
+        'template-1': 'atelier-construction.html',
+        'template-2': 'construction-website.html',
+        'template-3': 'halden-construction.html',
+        'template-4': 'kessler-construction.html',
+        'template-5': 'marlow-construction.html'
+      };
+
+      var path = (location.pathname || '/').replace(/\/+$/, '') || '/';
+      var segment = path.split('/').filter(Boolean).pop() || '';
+      var key = routes[segment] ? segment : 'template-1';
+      var target = routes[key];
+
+      location.replace(target);
+    })();
+  </script>
+</head>
+<body>
+  <p>Redirecting…</p>
+  <noscript>
+    <p>JavaScript is required. Choose a template:</p>
+    <ul>
+      <li><a href="atelier-construction.html">template-1</a></li>
+      <li><a href="construction-website.html">template-2</a></li>
+      <li><a href="halden-construction.html">template-3</a></li>
+      <li><a href="kessler-construction.html">template-4</a></li>
+      <li><a href="marlow-construction.html">template-5</a></li>
+    </ul>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Halden Build — We raise the skyline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#F4F5F1;--stone:#E3E5DF;--ink:#101311;--mute:#5E655F;--lime:#D4F23C;--line:#CDD0C8;
+--h:'Big Shoulders Display','Arial Narrow',Impact,sans-serif;--b:'Hanken Grotesk','Segoe UI',system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--b);line-height:1.55;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.w{max-width:1320px;margin:0 auto;padding:0 28px}
+h1,h2,h3{font-family:var(--h);font-weight:900;text-transform:uppercase;line-height:.88;letter-spacing:-.005em}
+
+/* floating nav */
+nav{position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:30;display:flex;align-items:center;gap:6px;background:rgba(244,245,241,.8);backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:999px;padding:6px 6px 6px 22px}
+nav b{font-family:var(--h);font-size:1.4rem;font-weight:900;margin-right:14px}
+nav a.l{padding:8px 14px;font-size:.92rem;font-weight:500;border-radius:999px;transition:background .25s}
+nav a.l:hover{background:var(--stone)}
+nav a.go{background:var(--ink);color:var(--lime);padding:10px 20px;border-radius:999px;font-weight:600;font-size:.92rem;margin-left:6px}
+
+/* hero */
+.hero{min-height:100svh;padding-top:120px;display:flex;flex-direction:column;justify-content:space-between;position:relative}
+.hero h1{font-size:clamp(4.6rem,15.5vw,14.5rem)}
+.hero h1 span{display:block;overflow:hidden;padding-bottom:.04em}
+.hero h1 span i{display:block;font-style:normal;transform:translateY(105%);animation:up 1s cubic-bezier(.2,.9,.2,1) forwards}
+.hero h1 span:nth-child(2) i{animation-delay:.12s;margin-left:clamp(0px,9vw,150px)}
+@keyframes up{to{transform:none}}
+.hero-row{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;margin:28px 0 24px;flex-wrap:wrap}
+.hero-row p{max-width:40ch;font-size:1.15rem;color:var(--mute)}
+.btn{display:inline-flex;align-items:center;gap:12px;background:var(--lime);color:var(--ink);font-weight:600;padding:16px 18px 16px 28px;border-radius:999px;transition:gap .3s,background .3s}
+.btn u{width:34px;height:34px;border-radius:50%;background:var(--ink);color:var(--lime);display:grid;place-items:center;text-decoration:none;transition:transform .35s}
+.btn:hover u{transform:rotate(-45deg)}.btn:hover{gap:18px}
+#sk{display:flex;align-items:flex-end;gap:5px;height:34vh;min-height:220px;border-bottom:3px solid var(--ink)}
+.bar{flex:1;height:calc(var(--h)*1%);background:repeating-linear-gradient(transparent 0 15px,rgba(16,19,17,.07) 15px 17px),var(--stone);transform-origin:bottom;animation:grow 1.2s cubic-bezier(.2,.9,.2,1) both;transition:height .4s cubic-bezier(.2,.9,.2,1),background-color .3s;border-radius:3px 3px 0 0}
+.bar.hot{background-color:var(--lime)}
+@keyframes grow{from{transform:scaleY(0)}}
+
+/* projects index */
+.sec{padding:130px 0 0}
+.top{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;margin-bottom:46px;flex-wrap:wrap}
+.top h2{font-size:clamp(3.4rem,9vw,8rem)}
+.top p{max-width:34ch;color:var(--mute)}
+.row{display:grid;grid-template-columns:2.4fr 1.3fr 1fr .6fr;gap:20px;align-items:center;padding:26px 14px;border-top:1.5px solid var(--ink);transition:background .3s,padding .35s}
+.row:last-child{border-bottom:1.5px solid var(--ink)}
+.row h3{font-size:clamp(2rem,4.6vw,4.2rem);transition:transform .4s}
+.row span{color:var(--mute);font-size:.98rem}
+.row:hover{background:var(--lime);padding-left:30px}
+.row:hover span{color:var(--ink)}
+#pv{position:fixed;left:0;top:0;width:300px;height:210px;border-radius:16px;pointer-events:none;z-index:25;opacity:0;scale:.7;transition:opacity .25s,scale .35s;background:var(--g);overflow:hidden;box-shadow:0 30px 60px -24px rgba(16,19,17,.5)}
+#pv.on{opacity:1;scale:1}
+#pv svg{position:absolute;inset:0;width:100%;height:100%;stroke:rgba(255,255,255,.55);fill:none;stroke-width:1.4}
+
+/* bento */
+.bento{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
+.t{border-radius:26px;padding:32px;position:relative;overflow:hidden;min-height:250px;display:flex;flex-direction:column;justify-content:space-between;background:var(--stone);clip-path:inset(0 100% 0 0 round 26px);transition:clip-path 1s cubic-bezier(.2,.9,.2,1),transform .4s}
+.t.in{clip-path:inset(0 0 0 0 round 26px)}
+.t:hover{transform:translateY(-6px)}
+.t h3{font-size:clamp(2.2rem,4vw,3.6rem)}
+.t p{max-width:34ch;color:var(--mute)}
+.t.a{grid-column:1/4;grid-row:1/3;background:var(--lime);min-height:520px}
+.t.a p{color:var(--ink)}
+.t.b,.t.c{grid-column:4/7}
+.t.d{grid-column:1/3;background:var(--ink);color:var(--paper)}.t.d p{color:#A9AFA8}
+.t.e{grid-column:3/7}
+.mini{display:flex;align-items:flex-end;gap:6px;height:90px}
+.mini i{flex:1;background:var(--ink);border-radius:3px 3px 0 0;height:var(--h);animation:pulse 2.6s ease-in-out infinite alternate}
+.mini i:nth-child(odd){animation-delay:-1.2s}
+@keyframes pulse{to{height:calc(var(--h) * .55)}}
+.big-b{position:absolute;right:-30px;bottom:-40px;width:78%;stroke:var(--ink);fill:none;stroke-width:1.5;opacity:.85}
+
+/* numbers */
+.nums{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.nums div{border-top:1.5px solid var(--ink);padding-top:16px}
+.nums strong{font-family:var(--h);font-weight:900;font-size:clamp(3.8rem,9vw,8rem);line-height:.9;display:block}
+.nums span{color:var(--mute)}
+
+/* process */
+.proc{display:grid;grid-template-columns:1fr 1.3fr;gap:60px}
+.proc .stick{position:sticky;top:110px;align-self:start}
+.proc h2{font-size:clamp(3.4rem,8vw,7rem);margin-bottom:22px}
+.proc .stick p{color:var(--mute);max-width:34ch}
+.st{padding:44px 0;border-top:1.5px solid var(--line);display:grid;grid-template-columns:90px 1fr;gap:16px;opacity:.28;transition:opacity .5s,border-color .5s}
+.st.on{opacity:1;border-color:var(--ink)}
+.st em{font-family:var(--h);font-weight:900;font-style:normal;font-size:3.4rem;line-height:.9;transition:color .5s}
+.st.on em{color:#7FA000}
+.st h3{font-size:2.5rem;margin-bottom:10px}
+.st p{color:var(--mute);max-width:44ch}
+
+/* cta */
+.cta{margin-top:140px;background:var(--lime);padding:110px 0 40px}
+.cta a.big{display:flex;justify-content:space-between;align-items:center;font-family:var(--h);font-weight:900;text-transform:uppercase;font-size:clamp(4.2rem,15vw,13rem);line-height:.85;gap:20px}
+.cta a.big u{flex:none;width:.5em;height:.5em;border-radius:50%;background:var(--ink);color:var(--lime);display:grid;place-items:center;text-decoration:none;font-size:inherit;transition:transform .5s}
+.cta a.big u::before{content:"\2197";font-family:var(--b);font-weight:500;font-size:.28em}
+.cta a.big:hover u{transform:rotate(45deg) scale(1.08)}
+.foot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-top:80px;padding-top:22px;border-top:1.5px solid var(--ink);font-weight:500}
+
+@media(max-width:860px){
+  nav a.l{display:none}
+  .row{grid-template-columns:1fr auto}.row span:nth-child(3),.row span:nth-child(4){display:none}
+  .bento{grid-template-columns:1fr}.t.a,.t.b,.t.c,.t.d,.t.e{grid-column:auto;grid-row:auto;min-height:230px}.t.a{min-height:380px}
+  .nums{grid-template-columns:1fr 1fr}
+  .proc{grid-template-columns:1fr;gap:30px}.proc .stick{position:static}
+  #pv{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition-duration:.01ms!important}
+  .hero h1 span i{transform:none}.t{clip-path:none}
+}
+</style>
+</head>
+<body>
+
+<nav><b>Halden</b><a class="l" href="#work">Work</a><a class="l" href="#services">Services</a><a class="l" href="#process">Process</a><a class="go" href="#start">Start a project</a></nav>
+
+<header class="hero w">
+  <h1 aria-label="We raise the skyline"><span><i>We raise</i></span><span><i>the skyline</i></span></h1>
+  <div>
+    <div class="hero-row">
+      <p>Halden Build delivers offices, homes and restorations on the date we promise, with one fixed price.</p>
+      <a class="btn" href="#start">Start a project<u>&rarr;</u></a>
+    </div>
+    <div id="sk" aria-hidden="true"></div>
+  </div>
+</header>
+
+<section class="sec w" id="work">
+  <div class="top"><h2>Selected<br>work</h2><p>Hover a project to preview it. Each one opened on its planned handover date.</p></div>
+  <div id="list">
+    <a class="row" href="#start" data-g="linear-gradient(135deg,#1B3A2B,#5C8F6B)" data-d="M10 190V60h70v130M80 100h60v90M30 90h20M30 120h20M100 120h20"><h3>Harbor Point Offices</h3><span>Commercial, 62,000 sq ft</span><span>Handed over 2025</span><span>14 mo</span></a>
+    <a class="row" href="#start" data-g="linear-gradient(135deg,#2B2F3A,#7E8AA3)" data-d="M10 110L100 30l90 80M30 100v90h140v-90M85 190v-45h30v45"><h3>Maple Court Homes</h3><span>Residential, 24 units</span><span>Handed over 2025</span><span>9 mo</span></a>
+    <a class="row" href="#start" data-g="linear-gradient(135deg,#7A4A12,#E0A04A)" data-d="M20 190V80l80-50 80 50v110M60 190v-60h80v60M100 30v30"><h3>Foundry Lofts</h3><span>Heritage renovation</span><span>Handed over 2026</span><span>7 mo</span></a>
+    <a class="row" href="#start" data-g="linear-gradient(135deg,#4A5A12,#B8D24A)" data-d="M10 190h180M30 190V50h50v140M120 190V90h50v100M30 80h50M30 120h50M120 130h50"><h3>Eastgate Logistics Hub</h3><span>Warehouse, 210,000 sq ft</span><span>Handed over 2026</span><span>11 mo</span></a>
+  </div>
+</section>
+
+<section class="sec w" id="services">
+  <div class="top"><h2>What we<br>build</h2><p>One team from first sketch to final inspection, so nothing is lost between trades.</p></div>
+  <div class="bento">
+    <div class="t a"><h3>Commercial</h3><p>Offices, retail and warehouses built around how your people and customers move.</p><svg class="big-b" viewBox="0 0 200 200"><path d="M10 190V60h70v130M80 100h60v90M140 40h50v150M30 90h20M30 120h20M30 150h20M100 120h20M100 150h20M155 70h20M155 100h20M155 130h20"/></svg></div>
+    <div class="t b"><h3>Residential</h3><p>Custom homes and multi-unit developments with itemised, fixed pricing.</p></div>
+    <div class="t c"><h3>Renovation</h3><p>Restorations and upgrades that keep your site running while we work.</p></div>
+    <div class="t d"><h3>Design-build</h3><p>Architects and builders in one contract.</p></div>
+    <div class="t e"><div><h3>Project control</h3><p>A weekly report with photos, spend against budget and the next four weeks of work.</p></div><div class="mini" aria-hidden="true"><i style="--h:40%"></i><i style="--h:70%"></i><i style="--h:55%"></i><i style="--h:90%"></i><i style="--h:65%"></i><i style="--h:100%"></i><i style="--h:80%"></i><i style="--h:50%"></i><i style="--h:75%"></i><i style="--h:95%"></i></div></div>
+  </div>
+</section>
+
+<section class="sec w">
+  <div class="nums">
+    <div><strong data-n="240">0</strong><span>Projects delivered</span></div>
+    <div><strong data-n="96" data-s="%">0</strong><span>Finished on schedule</span></div>
+    <div><strong data-n="18">0</strong><span>Years building</span></div>
+    <div><strong data-n="0">0</strong><span>Lost-time incidents this year</span></div>
+  </div>
+</section>
+
+<section class="sec w" id="process">
+  <div class="proc">
+    <div class="stick"><h2>How a<br>project runs</h2><p>Four stages. You sign off on each one before the next begins.</p></div>
+    <div>
+      <div class="st"><em>1</em><div><h3>Consult</h3><p>We visit the site, listen to your brief and set a realistic budget range.</p></div></div>
+      <div class="st"><em>2</em><div><h3>Plan</h3><p>Drawings, permits and a fixed-price quote with a dated schedule.</p></div></div>
+      <div class="st"><em>3</em><div><h3>Build</h3><p>Weekly photo reports from a named site manager who answers your calls.</p></div></div>
+      <div class="st"><em>4</em><div><h3>Hand over</h3><p>Final walkthrough, snag fixes and a ten-year structural warranty.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<footer class="cta" id="start">
+  <div class="w">
+    <a class="big" href="mailto:hello@haldenbuild.com"><span>Start a<br>project</span><u></u></a>
+    <div class="foot"><span>hello@haldenbuild.com</span><span>+1 (555) 014 2290</span><span>Licensed, bonded and insured</span></div>
+  </div>
+</footer>
+
+<div id="pv"><svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMax slice"><path id="pvp" d=""/></svg></div>
+
+<script>
+// interactive skyline
+const sk=document.getElementById('sk'),N=34,base=[],bars=[];
+for(let i=0;i<N;i++){const h=Math.max(22,Math.min(96,34+Math.abs(Math.sin(i*2.3))*46+(i*37)%17));base.push(h);
+  const b=document.createElement('div');b.className='bar';b.style.setProperty('--h',h);b.style.animationDelay=(.5+i*.035)+'s';sk.appendChild(b);bars.push(b)}
+const hero=document.querySelector('.hero');
+hero.addEventListener('pointermove',e=>{const r=sk.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*N;let near=0,nd=1e9;
+  bars.forEach((b,i)=>{const d=Math.abs(i+.5-x);if(d<nd){nd=d;near=i}b.style.setProperty('--h',Math.min(100,base[i]+Math.exp(-d*d/10)*45));b.classList.remove('hot')});
+  bars[near].classList.add('hot')});
+hero.addEventListener('pointerleave',()=>bars.forEach((b,i)=>{b.style.setProperty('--h',base[i]);b.classList.remove('hot')}));
+
+// project hover preview
+const pv=document.getElementById('pv'),pp=document.getElementById('pvp');let tx=0,ty=0,cx=0,cy=0;
+document.querySelectorAll('.row').forEach(r=>{
+  r.addEventListener('pointerenter',()=>{pv.style.setProperty('--g',r.dataset.g);pp.setAttribute('d',r.dataset.d);pv.classList.add('on')});
+  r.addEventListener('pointerleave',()=>pv.classList.remove('on'));
+  r.addEventListener('pointermove',e=>{tx=e.clientX+24;ty=e.clientY-100});
+});
+(function loop(){cx+=(tx-cx)*.14;cy+=(ty-cy)*.14;pv.style.transform=`translate(${cx}px,${cy}px)`;requestAnimationFrame(loop)})();
+
+// bento wipe reveal
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){const t=e.target;setTimeout(()=>t.classList.add('in'),(+t.dataset.i||0)*120);io.unobserve(t)}}),{threshold:.2});
+document.querySelectorAll('.t').forEach((t,i)=>{t.dataset.i=i;io.observe(t)});
+
+// count up
+const co=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;co.unobserve(e.target);
+  const n=+e.target.dataset.n,s=e.target.dataset.s||'',t0=performance.now();
+  (function f(t){const p=Math.min((t-t0)/1500,1);e.target.textContent=Math.round(n*(1-Math.pow(1-p,4)))+s;if(p<1)requestAnimationFrame(f)})(t0)}),{threshold:.6});
+document.querySelectorAll('[data-n]').forEach(el=>co.observe(el));
+
+// process steps light up while scrolling
+const so=new IntersectionObserver(es=>es.forEach(e=>e.target.classList.toggle('on',e.isIntersecting)),{rootMargin:'-35% 0px -35% 0px'});
+document.querySelectorAll('.st').forEach(s=>so.observe(s));
+</script>
+</body>
+</html>
