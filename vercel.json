@@ -6,6 +6,6 @@
     { "source": "/template-3", "destination": "/halden-construction.html" },
     { "source": "/template-4", "destination": "/kessler-construction.html" },
     { "source": "/template-5", "destination": "/marlow-construction.html" },
-    { "source": "/template-6", "destination": "/timberline-construction.html" },
+    { "source": "/template-6", "destination": "/timberline-construction.html" }
   ]
 }
