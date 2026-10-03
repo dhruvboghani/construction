@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Monolith — Construction at architectural scale</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=Hanken+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--k:#0C0C0D;--k2:#161618;--b:#EFEDE7;--m:#8d8d90;--arc:#00D1FF}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--k);color:var(--b);font:300 17px/1.65 'Hanken Grotesk',sans-serif;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+img{display:block;width:100%;height:100%;object-fit:cover}
+.ph{background:linear-gradient(135deg,#1c1d20,#2b2e33);overflow:hidden;position:relative}
+:focus-visible{outline:2px solid var(--arc);outline-offset:3px}
+.sy{font-family:'Syne',sans-serif;font-weight:800;letter-spacing:-.04em;line-height:.9}
+@media(pointer:fine){body,a,button,input,textarea,summary{cursor:none}
+#c1,#c2{position:fixed;left:0;top:0;pointer-events:none;z-index:999}
+#c1{width:8px;height:8px;margin:-4px;background:var(--arc);border-radius:50%}
+#c2{width:46px;height:46px;margin:-23px;border:1px solid rgba(255,255,255,.6);border-radius:50%;display:grid;place-items:center;font:600 11px 'Hanken Grotesk';letter-spacing:.06em;color:#000;transition:width .4s cubic-bezier(.2,.8,.2,1),height .4s cubic-bezier(.2,.8,.2,1),margin .4s cubic-bezier(.2,.8,.2,1),background .3s}
+#c2.v{width:104px;height:104px;margin:-52px;background:var(--arc);border-color:var(--arc)}
+#c2 span{opacity:0;transition:opacity .2s}#c2.v span{opacity:1}}
+@media(pointer:coarse){#c1,#c2{display:none}}
+#prog{position:fixed;left:0;top:0;height:2px;background:var(--arc);z-index:998;width:0}
+/* loader */
+#ld{position:fixed;inset:0;background:var(--k);z-index:1000;display:flex;align-items:flex-end;justify-content:space-between;padding:4vw;transition:transform 1.1s cubic-bezier(.8,0,.2,1)}
+#ld.go{transform:translateY(-101%)}
+#ld b{font:800 clamp(90px,20vw,300px)/.8 'Syne';letter-spacing:-.05em}
+#ld p{max-width:22ch;color:var(--m)}
+header{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:24px 4vw;mix-blend-mode:difference}
+.logo{font:800 22px 'Syne';letter-spacing:-.03em}
+nav{display:flex;gap:34px;font-size:15px;align-items:center}
+nav a:not(.pill){opacity:.7;transition:opacity .3s}nav a:hover{opacity:1}
+.pill{border:1px solid #fff;border-radius:99px;padding:9px 20px;transition:background .3s,color .3s}.pill:hover{background:#fff;color:#000}
+section{position:relative}
+.w{padding:150px 4vw}
+.lab{color:var(--m);font-size:14px;margin-bottom:26px}
+h2{font:800 clamp(40px,6.6vw,112px)/.94 'Syne';letter-spacing:-.045em;max-width:15ch}
+/* hero */
+.hero{height:100vh;min-height:680px;display:flex;flex-direction:column;justify-content:flex-end;padding:0 4vw 5vh;overflow:hidden}
+.hero .bg{position:absolute;inset:-6%;opacity:.5}
+.hero .bg img{filter:grayscale(1) contrast(1.1);transform:scale(1.1);animation:kb 24s ease-in-out infinite alternate}
+@keyframes kb{to{transform:scale(1.25) translate(-2%,-2%)}}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(12,12,13,.55),transparent 35%,var(--k) 100%)}
+.hero h1{position:relative;z-index:2;font:800 clamp(64px,15.5vw,270px)/.82 'Syne';letter-spacing:-.06em}
+.hero h1 .o{display:block;color:transparent;-webkit-text-stroke:1.5px var(--b);font-size:.42em;letter-spacing:-.03em;margin-bottom:.12em}
+.hero h1 .f{display:block;color:transparent;background-clip:text;-webkit-background-clip:text;background-size:160% auto;background-position:var(--px,50%) var(--py,50%);background-repeat:no-repeat}
+.hero h1 .l{display:block;overflow:hidden;padding-bottom:.04em}.hero h1 .l>span{display:block;transform:translateY(110%);transition:transform 1.3s cubic-bezier(.2,.8,.2,1)}
+body.rdy .hero h1 .l>span{transform:none}body.rdy .hero h1 .l:nth-child(2)>span{transition-delay:.12s}
+.hero-b{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:end;margin-top:4vh;gap:30px;flex-wrap:wrap}
+.hero-b p{max-width:40ch;font-size:19px}
+.scroll{font-size:13px;color:var(--m)}
+.mq{border-block:1px solid rgba(255,255,255,.12);overflow:hidden;white-space:nowrap;padding:22px 0}
+.mq div{display:inline-block;animation:mq 40s linear infinite;font:700 clamp(28px,4vw,56px) 'Syne';letter-spacing:-.03em}
+.mq i{font-style:normal;color:var(--arc);margin:0 .6em}
+@keyframes mq{to{transform:translateX(-50%)}}
+/* about */
+.ab{display:grid;grid-template-columns:1fr 1fr;gap:6vw;align-items:start}
+.words{font:700 clamp(28px,3.6vw,56px)/1.12 'Syne';letter-spacing:-.03em}
+.words span{opacity:.18;transition:opacity .25s}.words span.on{opacity:1}
+.abi{display:grid;gap:20px}.abi .ph{aspect-ratio:4/3}.abi .ph:last-child{width:62%;margin-left:auto;aspect-ratio:1}
+.abi img{transition:transform 1.4s cubic-bezier(.2,.8,.2,1)}.abi .ph:hover img{transform:scale(1.07)}
+/* services */
+.sl a{display:flex;justify-content:space-between;align-items:baseline;padding:30px 0;border-top:1px solid rgba(255,255,255,.14);transition:padding .5s cubic-bezier(.2,.8,.2,1),color .3s}
+.sl a:last-child{border-bottom:1px solid rgba(255,255,255,.14)}
+.sl h3{font:800 clamp(34px,6vw,96px)/1 'Syne';letter-spacing:-.045em}
+.sl p{color:var(--m);max-width:30ch;text-align:right;transition:color .3s}
+.sl:hover a{color:rgba(255,255,255,.22)}.sl a:hover{color:var(--b);padding-left:2vw}.sl a:hover p{color:var(--b)}
+#pv{position:fixed;left:0;top:0;width:min(30vw,380px);aspect-ratio:4/5;z-index:60;pointer-events:none;opacity:0;transform:translate(-50%,-50%) scale(.7) rotate(-5deg);transition:opacity .3s,scale .3s;overflow:hidden}
+#pv.on{opacity:1}
+#pv img{position:absolute;inset:0;opacity:0;transition:opacity .25s}#pv img.on{opacity:1}
+/* horizontal projects */
+.hz{height:420vh}
+.hzs{position:sticky;top:0;height:100vh;overflow:hidden;display:flex;flex-direction:column;justify-content:center}
+.hzs .hd{padding:0 4vw;display:flex;justify-content:space-between;align-items:end;margin-bottom:5vh}
+.hzs .hd h2{font-size:clamp(40px,5.4vw,90px)}
+.trk{display:flex;gap:2vw;padding:0 4vw;will-change:transform}
+.pj{flex:0 0 min(46vw,720px)}
+.pj .ph{height:58vh}
+.pj img{transition:transform 1.4s cubic-bezier(.2,.8,.2,1)}.pj:hover img{transform:scale(1.06)}
+.pj .ph::after{content:"";position:absolute;inset:0;background:var(--k);transform-origin:top;transition:transform 1.2s cubic-bezier(.8,0,.2,1)}
+.pj.in .ph::after{transform:scaleY(0)}
+.pj h3{font:700 30px/1.1 'Syne';letter-spacing:-.03em;margin-top:16px}.pj span{color:var(--m);font-size:15px}
+.bar{height:2px;background:rgba(255,255,255,.14);margin:4vh 4vw 0}.bar i{display:block;height:100%;width:0;background:var(--arc)}
+/* stats */
+.st{display:grid;grid-template-columns:repeat(4,1fr);gap:3vw}
+.st div{border-top:1px solid rgba(255,255,255,.2);padding-top:22px}
+.st b{display:block;font:800 clamp(52px,7vw,120px)/.9 'Syne';letter-spacing:-.05em}
+.st span{color:var(--m);font-size:15px}
+.band{height:70vh;overflow:hidden;position:relative}.band img{position:absolute;left:0;top:-15%;height:130%;will-change:transform}
+.band::after{content:"";position:absolute;inset:0;background:rgba(12,12,13,.35)}
+.band h2{position:absolute;z-index:2;left:4vw;bottom:5vh;max-width:18ch}
+/* process */
+.pr{display:grid;grid-template-columns:1fr 1.3fr;gap:6vw}
+.pr .sticky{position:sticky;top:120px;align-self:start}
+.steps{position:relative;padding-left:44px}
+.steps::before{content:"";position:absolute;left:8px;top:8px;bottom:8px;width:1px;background:rgba(255,255,255,.18)}
+.steps i{position:absolute;left:8px;top:8px;width:1px;height:var(--h,0%);background:var(--arc);max-height:calc(100% - 16px)}
+.step{padding-bottom:84px;position:relative}.step:last-child{padding-bottom:0}
+.step::before{content:"";position:absolute;left:-41px;top:10px;width:11px;height:11px;border-radius:50%;background:var(--k);border:1px solid var(--m);transition:all .4s}
+.step.on::before{background:var(--arc);border-color:var(--arc);box-shadow:0 0 20px var(--arc)}
+.step h3{font:800 clamp(28px,3.4vw,50px)/1 'Syne';letter-spacing:-.04em;margin-bottom:12px}.step p{color:var(--m);max-width:46ch}
+/* quote */
+.q{background:var(--b);color:var(--k);padding:150px 4vw}
+.q blockquote{font:700 clamp(30px,4.6vw,76px)/1.06 'Syne';letter-spacing:-.04em;max-width:22ch}
+.q footer{margin-top:40px;display:flex;gap:16px;align-items:center}.q footer .ph{width:56px;height:56px;border-radius:50%}
+/* faq */
+.fq{display:grid;grid-template-columns:1fr 1.4fr;gap:6vw}
+details{border-top:1px solid rgba(255,255,255,.16);padding:26px 0}details:last-child{border-bottom:1px solid rgba(255,255,255,.16)}
+summary{list-style:none;display:flex;justify-content:space-between;font:700 24px 'Syne';letter-spacing:-.02em}summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--arc);font-size:30px;line-height:1;transition:transform .4s}details[open] summary::after{transform:rotate(135deg)}
+details p{color:var(--m);margin-top:14px;max-width:54ch}
+/* contact */
+.ct{background:var(--k2);display:grid;grid-template-columns:1fr 1fr;gap:6vw}
+.ct h2{font-size:clamp(46px,8vw,140px)}
+form{display:grid;gap:26px;align-content:end}
+.fi{position:relative}.fi input,.fi textarea,.fi select{width:100%;background:none;border:0;border-bottom:1px solid rgba(255,255,255,.3);color:var(--b);font:300 20px 'Hanken Grotesk';padding:22px 0 10px;outline:0;border-radius:0;resize:none}
+.fi label{position:absolute;left:0;top:22px;color:var(--m);transition:all .3s;pointer-events:none}
+.fi input:focus+label,.fi input:not(:placeholder-shown)+label,.fi textarea:focus+label,.fi textarea:not(:placeholder-shown)+label{top:0;font-size:13px;color:var(--arc)}
+.fi input:focus,.fi textarea:focus{border-color:var(--arc)}
+.send{justify-self:start;background:var(--arc);color:#000;border:0;border-radius:99px;padding:20px 44px;font:600 17px 'Hanken Grotesk';transition:transform .35s,box-shadow .35s}.send:hover{transform:translateY(-4px);box-shadow:0 14px 50px rgba(0,209,255,.4)}
+#ok{color:var(--arc);min-height:1.5em}
+footer.f{display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px;padding:34px 4vw;border-top:1px solid rgba(255,255,255,.1);color:var(--m);font-size:14px}
+.wm{font:800 clamp(80px,22vw,380px)/.78 'Syne';letter-spacing:-.07em;color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.2);padding:0 4vw;overflow:hidden;white-space:nowrap}
+[data-r]{opacity:0;transform:translateY(46px);transition:opacity 1s,transform 1s cubic-bezier(.2,.8,.2,1)}[data-r].in{opacity:1;transform:none}
+@media(max-width:900px){nav a:not(.pill){display:none}.ab,.pr,.fq,.ct{grid-template-columns:1fr}.st{grid-template-columns:1fr 1fr}.sl p{display:none}.pr .sticky{position:static}.pj{flex-basis:80vw}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}[data-r]{opacity:1;transform:none}#ld{display:none}.hero h1 .l>span{transform:none}}
+</style>
+</head>
+<body>
+<div id="prog"></div><div id="c1"></div><div id="c2"><span id="cl">View</span></div>
+<div id="ld"><b id="ln">0</b><p>Monolith Construction. Loading the site.</p></div>
+<header><a class="logo" href="#">MONOLITH</a><nav><a href="#services">Services</a><a href="#work">Projects</a><a href="#process">Process</a><a href="#faq">FAQ</a><a class="pill" href="#contact">Start a project</a></nav></header>
+
+<section class="hero" id="hero">
+  <div class="bg ph"><img data-i="0" alt=""></div>
+  <h1><span class="o l"><span>We build</span></span><span class="f l"><span id="fill">Beyond</span></span></h1>
+  <div class="hero-b"><p>Monolith is a design-and-build contractor for cultural, commercial and infrastructure projects where the structure is the architecture.</p><span class="scroll">Scroll to explore</span></div>
+</section>
+<div class="mq"><div>Concrete<i>◆</i>Steel<i>◆</i>Glass<i>◆</i>Timber<i>◆</i>Stone<i>◆</i>Concrete<i>◆</i>Steel<i>◆</i>Glass<i>◆</i>Timber<i>◆</i>Stone<i>◆</i>Concrete<i>◆</i>Steel<i>◆</i>Glass<i>◆</i>Timber<i>◆</i>Stone<i>◆</i>Concrete<i>◆</i>Steel<i>◆</i>Glass<i>◆</i>Timber<i>◆</i>Stone<i>◆</i></div></div>
+
+<section class="w ab" id="about">
+  <div><p class="lab" data-r>About Monolith</p><p class="words" id="words">We believe a building should look like the way it was made. For thirty years we have built exposed concrete museums, steel-framed towers and long-span bridges with the same crews, the same standards and no shortcuts.</p></div>
+  <div class="abi"><div class="ph" data-r><img data-i="1" alt="Construction crane against sky" loading="lazy"></div><div class="ph" data-r><img data-i="2" alt="Workers on site" loading="lazy"></div></div>
+</section>
+
+<section class="w" id="services">
+  <p class="lab" data-r>Services</p><h2 data-r style="margin-bottom:70px">Five ways we take a project from drawing to keys.</h2>
+  <div class="sl" id="sl">
+    <a href="#contact" data-i="3" data-l="Enquire"><h3>Design-build</h3><p>One contract, one team, one fixed price.</p></a>
+    <a href="#contact" data-i="1" data-l="Enquire"><h3>Structures</h3><p>Concrete and steel frames to 60 storeys.</p></a>
+    <a href="#contact" data-i="4" data-l="Enquire"><h3>Facades</h3><p>Glass, stone and metal envelopes.</p></a>
+    <a href="#contact" data-i="2" data-l="Enquire"><h3>Civil works</h3><p>Bridges, roads and foundations.</p></a>
+    <a href="#contact" data-i="0" data-l="Enquire"><h3>Restoration</h3><p>Heritage buildings made safe and sound.</p></a>
+  </div>
+</section>
+<div id="pv" class="ph"><img data-i="3" alt=""><img data-i="1" alt=""><img data-i="4" alt=""><img data-i="2" alt=""><img data-i="0" alt=""></div>
+
+<section class="hz" id="work"><div class="hzs">
+  <div class="hd"><h2>Selected work</h2><span style="color:var(--m)">Scroll sideways through five projects</span></div>
+  <div class="trk" id="trk">
+    <a class="pj" href="#contact" data-l="View"><div class="ph"><img data-i="4" alt="Glass tower" loading="lazy"></div><h3>Aurelian Tower</h3><span>52 storeys · Mixed-use · 2025</span></a>
+    <a class="pj" href="#contact" data-l="View"><div class="ph"><img data-i="3" alt="Concrete building" loading="lazy"></div><h3>Hall of the Meridian</h3><span>Museum · Exposed concrete · 2024</span></a>
+    <a class="pj" href="#contact" data-l="View"><div class="ph"><img data-i="2" alt="Site team" loading="lazy"></div><h3>Northgate Interchange</h3><span>Civil · 3 bridges · 2023</span></a>
+    <a class="pj" href="#contact" data-l="View"><div class="ph"><img data-i="1" alt="Steel frame" loading="lazy"></div><h3>Foundry Lofts</h3><span>Residential · Steel frame · 2022</span></a>
+    <a class="pj" href="#contact" data-l="View"><div class="ph"><img data-i="0" alt="Site at dusk" loading="lazy"></div><h3>Saint Aldric Library</h3><span>Restoration · Grade I listed · 2021</span></a>
+  </div>
+  <div class="bar"><i id="hb"></i></div>
+</div></section>
+
+<section class="w">
+  <div class="st"><div data-r><b data-n="312">0</b><span>projects delivered</span></div><div data-r><b data-n="31">0</b><span>years in business</span></div><div data-r><b data-n="640">0</b><span>direct employees</span></div><div data-r><b data-n="98" data-s="%">0</b><span>handed over on the agreed date</span></div></div>
+</section>
+
+<section class="band"><img data-i="1" id="bimg" alt=""><h2 data-r>Heavy lifting, done quietly.</h2></section>
+
+<section class="w pr" id="process">
+  <div class="sticky"><p class="lab">How we work</p><h2>From first sketch to final inspection.</h2></div>
+  <div class="steps" id="steps"><i id="sline"></i>
+    <div class="step"><h3>Brief and feasibility</h3><p>We test your budget, site and programme in four weeks, and tell you plainly if it does not add up.</p></div>
+    <div class="step"><h3>Design and price</h3><p>Architects and engineers sit with our cost team, so the drawings are always buildable at the agreed number.</p></div>
+    <div class="step"><h3>Build</h3><p>Our own crews run the site. A weekly report shows progress, cost and safety in one page.</p></div>
+    <div class="step"><h3>Handover and care</h3><p>Commissioning, training, full documentation, and a named engineer for the first five years.</p></div>
+  </div>
+</section>
+
+<section class="q"><blockquote data-r>They gave us a concrete building that looks exactly like the model, and a final bill within one percent of the first one.</blockquote><footer data-r><div class="ph"><img data-i="2" alt=""></div><div><b style="font-weight:600">Helena Voss</b><br><span style="opacity:.6">Director, Meridian Arts Trust</span></div></footer></section>
+
+<section class="w fq" id="faq">
+  <div><p class="lab">Questions</p><h2>What clients ask before they sign.</h2></div>
+  <div data-r>
+    <details open><summary>Do you work with our architect?</summary><p>Yes. We build from your architect's design, or provide a design-build team under one contract. You choose.</p></details>
+    <details><summary>How is the price fixed?</summary><p>After design freeze we give a guaranteed maximum price. Savings found on site are shared with you.</p></details>
+    <details><summary>What size of project do you take?</summary><p>From about $5 million to $400 million. Smaller heritage and specialist work is considered case by case.</p></details>
+    <details><summary>How soon can you start?</summary><p>Pre-construction can begin within three weeks of a signed letter of intent.</p></details>
+  </div>
+</section>
+
+<section class="w ct" id="contact">
+  <div><p class="lab">Contact</p><h2>Tell us what you want to build.</h2></div>
+  <form id="fm"><div class="fi"><input id="a" placeholder=" " required><label for="a">Your name</label></div><div class="fi"><input id="b" type="email" placeholder=" " required><label for="b">Email</label></div><div class="fi"><textarea id="c" rows="3" placeholder=" "></textarea><label for="c">Project, location and rough budget</label></div><button class="send" type="submit">Send enquiry</button><p id="ok" role="status"></p></form>
+</section>
+<div class="wm" aria-hidden="true">MONOLITH</div>
+<footer class="f"><span>© 2026 Monolith Construction Ltd</span><span>Licence No. 04-77192 · Fully insured</span><span>hello@monolith.example</span></footer>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],fine=matchMedia('(pointer:fine)').matches;
+/* Photos: replace these URLs with your own. A dark gradient shows if a photo fails. */
+const IMG=['photo-1504307651254-35680f356dfd','photo-1541888946425-d81bb19240f5','photo-1503387762-592deb58ef4e','photo-1487958449943-2429e8be8625','photo-1486406146926-c627a92ad1ab'].map(i=>`https://images.unsplash.com/${i}?auto=format&fit=crop&w=1800&q=70`);
+$$('img[data-i]').forEach(im=>{im.src=IMG[im.dataset.i];im.onerror=()=>im.style.display='none'});
+const fill=$('#fill');fill.style.backgroundImage=`url(${IMG[1]})`;
+/* loader */
+let n=0;const ln=$('#ln'),t=setInterval(()=>{n+=Math.ceil(Math.random()*9);if(n>=100){n=100;clearInterval(t);setTimeout(()=>{$('#ld').classList.add('go');document.body.classList.add('rdy')},250)}ln.textContent=n},45);
+/* cursor */
+if(fine){let x=0,y=0,tx=0,ty=0;const a=$('#c1'),b=$('#c2'),l=$('#cl');
+addEventListener('mousemove',e=>{tx=e.clientX;ty=e.clientY;a.style.transform=`translate(${tx}px,${ty}px)`;const el=e.target.closest('[data-l]');b.classList.toggle('v',!!el);if(el)l.textContent=el.dataset.l;
+ $('#hero').style.setProperty('--px',(30+e.clientX/innerWidth*40)+'%');$('#hero').style.setProperty('--py',(30+e.clientY/innerHeight*40)+'%');fill.style.setProperty('--px',(30+e.clientX/innerWidth*40)+'%');fill.style.setProperty('--py',(30+e.clientY/innerHeight*40)+'%')});
+(function f(){x+=(tx-x)*.16;y+=(ty-y)*.16;b.style.transform=`translate(${x}px,${y}px)`;requestAnimationFrame(f)})();
+/* service preview follows cursor */
+const pv=$('#pv'),pis=$$('#pv img');let px=0,py=0,qx=0,qy=0;
+$$('#sl a').forEach(a=>{a.addEventListener('mouseenter',()=>{pv.classList.add('on');pv.style.transform='translate(-50%,-50%) scale(1) rotate(-5deg)';pis.forEach(i=>i.classList.toggle('on',i.dataset.i===a.dataset.i))});a.addEventListener('mouseleave',()=>{pv.classList.remove('on');pv.style.transform='translate(-50%,-50%) scale(.7) rotate(-5deg)'})});
+addEventListener('mousemove',e=>{px=e.clientX;py=e.clientY});
+(function g(){qx+=(px-qx)*.1;qy+=(py-qy)*.1;pv.style.left=qx+'px';pv.style.top=qy+'px';requestAnimationFrame(g)})();}
+/* word-by-word highlight */
+const wd=$('#words');wd.innerHTML=wd.textContent.split(' ').map(w=>`<span>${w}</span>`).join(' ');const ws=$$('#words span');
+/* scroll engine */
+const trk=$('#trk'),hz=$('#work'),bimg=$('#bimg'),band=$('.band'),sline=$('#sline'),steps=$$('.step'),stp=$('#steps');
+function sc(){const H=innerHeight,max=document.body.scrollHeight-H;$('#prog').style.width=scrollY/max*100+'%';
+ const r=wd.getBoundingClientRect(),p=Math.min(1,Math.max(0,(H*.85-r.top)/(r.height+H*.3)));ws.forEach((w,i)=>w.classList.toggle('on',i/ws.length<p));
+ const hr=hz.getBoundingClientRect(),hp=Math.min(1,Math.max(0,-hr.top/(hz.offsetHeight-H)));trk.style.transform=`translateX(${-hp*(trk.scrollWidth-innerWidth+innerWidth*.04)}px)`;$('#hb').style.width=hp*100+'%';
+ const br=band.getBoundingClientRect();bimg.style.transform=`translateY(${(br.top/H)*-12}%)`;
+ const sr=stp.getBoundingClientRect(),sp=Math.min(1,Math.max(0,(H*.6-sr.top)/sr.height));sline.style.setProperty('--h',sp*100+'%');
+ steps.forEach(s=>s.classList.toggle('on',s.getBoundingClientRect().top<H*.6));
+ $('#hero .bg').style.transform=`translateY(${scrollY*.25}px)`}
+addEventListener('scroll',sc,{passive:true});addEventListener('resize',sc);sc();
+/* reveal */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');e.target.querySelectorAll('[data-n]').forEach(c=>{const v=+c.dataset.n,s=c.dataset.s||'',st=performance.now();(function u(now){const p=Math.min((now-st)/1700,1);c.textContent=Math.round(v*(1-Math.pow(1-p,4)))+s;if(p<1)requestAnimationFrame(u)})(st)});io.unobserve(e.target)}}),{threshold:.2});
+$$('[data-r],.pj').forEach(el=>io.observe(el));
+/* form */
+$('#fm').addEventListener('submit',e=>{e.preventDefault();$('#ok').textContent='Thank you. We will reply within one working day.';e.target.reset()});
+</script>
+</body>
+</html>
