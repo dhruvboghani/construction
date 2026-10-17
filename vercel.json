@@ -1,6 +1,6 @@
 {
   "rewrites": [
-    { "source": "/", "destination": "/atelier-construction.html" },
+    { "source": "/", "destination": "/bhanderi-coming-soon.html" },
     { "source": "/template-1", "destination": "/atelier-construction.html" },
     { "source": "/template-2", "destination": "/construction-website.html" },
     { "source": "/template-3", "destination": "/halden-construction.html" },
@@ -8,6 +8,8 @@
     { "source": "/template-5", "destination": "/marlow-construction.html" },
     { "source": "/template-6", "destination": "/timberline-construction.html" },
     { "source": "/template-7", "destination": "/bhanderi-buildcon-v2.html" },
-    { "source": "/template-8", "destination": "/bhanderi-buildcon-v3.html" }
+    { "source": "/template-8", "destination": "/bhanderi-buildcon-v3.html" },
+    { "source": "/template-9", "destination": "/bhanderi-coming-soon.html" }
+    
   ]
 }
